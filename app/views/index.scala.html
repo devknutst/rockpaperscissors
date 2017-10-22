@@ -1,0 +1,21 @@
+@(score: Form[model.Score])(implicit request: RequestHeader, messages: Messages)
+
+@main("Welcome to Play") {
+    <table>
+
+        <table >
+            <tr>
+                <td>
+                @helper.form(action = routes.Application.make()) {
+                    @helper.inputText(score("human"))
+                    <button type="submit">Starte Spiel</button>
+                }
+                </td>
+            </tr>
+        </table>
+
+    </table>
+    <h2>Wähle Anzahl der Spielzüge aus</h2>
+
+
+}
