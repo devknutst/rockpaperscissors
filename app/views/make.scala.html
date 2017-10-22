@@ -1,4 +1,4 @@
-@(scoreForm: Form[model.Score])
+@(scoreForm: Form[model.Score], score: model.Score)(implicit request: RequestHeader, messages: Messages)
 
 <!DOCTYPE html>
 <html lang="en">
@@ -27,13 +27,13 @@
             </tr>
             <tr>
                 <td>
-                    <h3>@scoreForm</h3>
+                    <h3>@score.human</h3>
                 </td>
                 <td>
 
                 </td>
                 <td>
-                    <h3>@scoreForm</h3>
+                    <h3>@score.computer</h3>
                 </td>
             </tr>
         </table>
@@ -43,28 +43,30 @@
                     <h3>Runden zu spielen:</h3>
                 </td>
                 <td>
-                    <h3>@scoreForm</h3>
+                    <h3>@score.roundsToGo</h3>
                 </td>
 
             </tr>
         </table>
         <h4>Mach deinen Zug</h4>
+        <h3>@score.msg</h3>
         <table>
             <table >
                 <tr>
                     <td>
                         @helper.form(action = routes.Application.make()) {
-                            <button type="submit">Papier</button>
+                            @helper.select(scoreForm("decision"), options = List("Paper" -> "Paper", "Scissor" -> "Scissor", "Stone" -> "Stone"), '_label -> null)
+                            <input type="hidden" name="human" value="@score.human" />
+                            <input type="hidden" name="computer" value="@score.computer" />
+                            <input type="hidden" name="roundsToGo" value="@score.roundsToGo" />
+                            <input type="hidden" name="roundsMade" value="@score.roundsMade" />
+                            <input type="hidden" name="msg" value="made" />
+                            <button type="submit">Entscheidung</button>
                         }
                     </td>
                     <td>
-                    @helper.form(action = routes.Application.make()) {
-                        <button type="submit">Schere</button>
-                    }
-                    </td>
-                    <td>
-                    @helper.form(action = routes.Application.make()) {
-                        <button type="submit">Stein</button>
+                    @helper.form(action = routes.Application.index()) {
+                        <button type="submit">Neues Spiel</button>
                     }
                     </td>
                 </tr>

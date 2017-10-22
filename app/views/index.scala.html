@@ -1,13 +1,14 @@
 @(score: Form[model.Score])(implicit request: RequestHeader, messages: Messages)
 
 @main("Welcome to Play") {
+    <h2>Wähle Anzahl der Spielzüge aus</h2>
     <table>
 
         <table >
             <tr>
                 <td>
                 @helper.form(action = routes.Application.make()) {
-                    @helper.inputText(score("roundsToGo"))
+                    @helper.inputText(score("roundsToGo"), '_label -> null)
                     <button type="submit">Starte Spiel</button>
                 }
                 </td>
@@ -15,7 +16,6 @@
         </table>
 
     </table>
-    <h2>Wähle Anzahl der Spielzüge aus</h2>
 
 
 }

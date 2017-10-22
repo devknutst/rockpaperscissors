@@ -3,7 +3,7 @@ package controllers
 import javax.inject._
 
 import _root_.mapping.DecisionMapping
-import model.{Decision, Score}
+import model.{Decision, Generator, Score}
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.mvc._
@@ -23,7 +23,7 @@ class Application @Inject()(cc: ControllerComponents) extends AbstractController
       "roundsMade" -> default(number, 0),
       "roundsToGo" -> default(number, 0),
       "decision" -> default(DecisionMapping.decisionType, Decision.Paper),
-      "msg" -> default(text, "kein Zug")
+      "msg" -> default(text, "Erster Zug")
     )(Score.apply)(Score.unapply)
   )
 
@@ -46,17 +46,17 @@ class Application @Inject()(cc: ControllerComponents) extends AbstractController
 
   def make = Action { implicit request =>
 
-    val test = scoreForm.apply("roundsToGo")
-
-
-
     scoreForm.bindFromRequest().fold(
       formWithErrors => {
-        BadRequest(views.html.make(formWithErrors))
+        BadRequest(views.html.make(formWithErrors, scoreForm.get))
       },
-      decision => {
-        println(decision.toString)
-        Ok(views.html.make(scoreForm))
+      score => {
+        if (score.msg == "Erster Zug") Ok(views.html.make(scoreForm, score))
+        else {
+          val next = Generator.play(score)
+          if (next.roundsToGo + 1 > 0) Ok(views.html.make(scoreForm, next))
+          else Ok(views.html.make(scoreForm, Generator.result(score = score)))
+        }
       }
     )
 
