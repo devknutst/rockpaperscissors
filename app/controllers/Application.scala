@@ -18,18 +18,18 @@ class Application @Inject()(cc: ControllerComponents) extends AbstractController
 
   val scoreForm:Form[Score] = Form(
     mapping(
-      "human" -> number,
-      "computer" -> number,
-      "roundsMade" -> number,
-      "roundsToGo" -> number,
-      "decision" -> DecisionMapping.decisionType,
-      "msg" -> text
+      "human" -> default(number, 0),
+      "computer" -> default(number, 0),
+      "roundsMade" -> default(number, 0),
+      "roundsToGo" -> default(number, 0),
+      "decision" -> default(DecisionMapping.decisionType, Decision.Paper),
+      "msg" -> default(text, "kein Zug")
     )(Score.apply)(Score.unapply)
   )
 
 
 
-  def index() = Action { implicit request: Request[AnyContent] =>
+  def index = Action { implicit request: Request[AnyContent] =>
 
     scoreForm.fill(Score(0, 0, 0, 0, Decision.Paper, ""))
 
@@ -44,13 +44,18 @@ class Application @Inject()(cc: ControllerComponents) extends AbstractController
   }
 
 
-  def make() = Action { implicit request =>
+  def make = Action { implicit request =>
+
+    val test = scoreForm.apply("roundsToGo")
+
+
 
     scoreForm.bindFromRequest().fold(
       formWithErrors => {
         BadRequest(views.html.make(formWithErrors))
       },
       decision => {
+        println(decision.toString)
         Ok(views.html.make(scoreForm))
       }
     )
