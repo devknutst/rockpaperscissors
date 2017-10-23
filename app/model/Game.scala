@@ -30,9 +30,10 @@ object Generator {
     val compDecision = randomTurn
     val roundsMade = score.roundsMade + 1
     val roundsToGo = score.roundsToGo - 1
-    val win:Score = Score(score.human +1, score.computer, roundsMade, roundsToGo, compDecision, "Gewonnen! Computerzug:" + compDecision)
-    val lose:Score = Score(score.human, score.computer+1, roundsMade, roundsToGo, compDecision, "Verloren! Computerzug:" + compDecision)
-    val draw:Score = Score(score.human, score.computer, score.roundsMade, score.roundsToGo, compDecision, "Unentschieden! Computerzug:" + compDecision)
+    val msg = "Du:"+ score.decision + " - Computer:" + compDecision
+    val win:Score = Score(score.human +1, score.computer, roundsMade, roundsToGo, compDecision, "Gewonnen! " + msg)
+    val lose:Score = Score(score.human, score.computer+1, roundsMade, roundsToGo, compDecision, "Verloren! " + msg)
+    val draw:Score = Score(score.human, score.computer, score.roundsMade, score.roundsToGo, compDecision, "Unentschieden! " + msg)
 
     (score.decision, compDecision) match {
       case (Decision.Paper, Decision.Stone) => win
@@ -47,8 +48,8 @@ object Generator {
 
     (score.human, score.computer) match {
       case (a,b) if (a==b) => Score(score.human, score.computer, score.roundsMade, 1, Decision.Paper, "Einzelrunde wg. Gleichstand")
-      case (a,b) if (a > b) => Score(score.human, score.computer, score.roundsMade, 0, Decision.Paper, "Du gewinnst")
-      case _ => Score(score.human, score.computer, score.roundsMade, 0, Decision.Paper, "Computer hat gewonnen.")
+      case (a,b) if (a > b) => Score(score.human, score.computer, score.roundsMade, 0, Decision.Paper, score.msg +  " ::: Du gewinnst Gesamtspiel!")
+      case _ => Score(score.human, score.computer, score.roundsMade, 0, Decision.Paper, score.msg +  " ::: Computer gewinnt Gesamtspiel!")
     }
 
   }

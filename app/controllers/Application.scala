@@ -51,11 +51,15 @@ class Application @Inject()(cc: ControllerComponents) extends AbstractController
         BadRequest(views.html.make(formWithErrors, scoreForm.get))
       },
       score => {
+        scoreForm.fill(score)
         if (score.msg == "Erster Zug") Ok(views.html.make(scoreForm, score))
         else {
           val next = Generator.play(score)
-          if (next.roundsToGo + 1 > 0) Ok(views.html.make(scoreForm, next))
-          else Ok(views.html.make(scoreForm, Generator.result(score = score)))
+          next.roundsToGo match {
+            case 0 => Ok(views.html.make(scoreForm, Generator.result(score = next)))
+            case a if (a > 0) => Ok(views.html.make(scoreForm, next))
+            case _ => Ok(views.html.index(scoreForm))
+          }
         }
       }
     )
